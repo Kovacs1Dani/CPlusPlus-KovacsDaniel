@@ -4,11 +4,15 @@
 
 #include "PointSet.h"
 
+#include <iostream>
 #include <random>
+#include <set>
 
 inline void PointSet::computeDistances() {
-    for (int i = 0; i , points.size(); i++) {
-        for (int j = 0; j < points.size(); j++) {
+    distances.clear();
+    int nPoints = points.size();
+    for (int i = 0; i < nPoints; i++) {
+        for (int j = i + 1; j < nPoints; j++) {
             this->distances.push_back(this->points[i].distanceTo(this->points[j]));
         }
     }
@@ -56,6 +60,39 @@ double PointSet::minDistance() const {
 }
 
 int PointSet::numDistances() const {
-    
+    return (n * (n-1)) / 2;
 }
 
+void PointSet::printPoints() const {
+    for (auto p : points) {
+        std::cout << "(" << p.getX() << ", " << p.getY() << ") ";
+    }
+    std::cout << std::endl;
+}
+
+void PointSet::printDistances() const {
+    for (auto d : distances) {
+        std::cout << d << ' ';
+    }
+    std::cout << "\n";
+}
+
+void PointSet::sortPointsX() {
+    std::sort(points.begin(), points.end(), [](const Point &a, const Point &b) { return a.getX() < b.getX();});
+}
+
+void PointSet::sortPointsY() {
+    std::sort(points.begin(), points.end(), [](const Point &a, const Point &b) { return a.getY() < b.getY();});
+}
+
+void PointSet::sortDistances() {
+    std::sort(distances.begin(), distances.end());
+}
+
+int PointSet::numDistinctDistances() {
+    std::set<double> uniqueDistances;
+    for (double d : distances) {
+        uniqueDistances.insert(d);
+    }
+    return static_cast<int>(uniqueDistances.size());
+}
