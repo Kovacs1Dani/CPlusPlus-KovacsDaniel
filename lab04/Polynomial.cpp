@@ -9,8 +9,12 @@ Polynomial::Polynomial(int degree, const double coefficients[]) : capacity(degre
     if (coefficients != nullptr) {
         for (int i = 0; i <= degree; ++i) {
             this->coefficients[i] = coefficients[i];
+            }
+        } else { // kell else is mert ha nullpointerrel hozunk letre egy coefficientset akkor memszemet lesz
+            for ( int i = 0; i <= degree; ++i) {
+                this->coefficients[i] = 0.0;
+            }
         }
-    }
 }
 
 Polynomial::Polynomial(const Polynomial &that) : capacity(that.capacity),
@@ -62,6 +66,7 @@ Polynomial Polynomial::derivative() const {
 
 double Polynomial::operator[](int index) const {
     if (index > capacity) return 0;
+    if ( index < 0 || index >= capacity) return 0.0;
     return coefficients[capacity - index - 1];
 }
 
@@ -92,15 +97,30 @@ Polynomial operator-(const Polynomial &a, const Polynomial &b) {
 }
 
 Polynomial operator*(const Polynomial &a, const Polynomial &b) {
+    int newDeg = a.degree() + b.degree();
+    auto *prod = new double[newDeg + 1];
+    for (int i = 0; i <= newDeg; ++i) {
+        prod[i] = 0.0;
+    }
 
+    for (int i = 0; i <= a.degree(); ++i) {
+        for (int j = 0; j <= b.degree(); ++j) {
+            int ai = a.capacity - i - 1;
+            int bj = b.capacity - j - 1;
+            prod[newDeg - (i+j)] += a.coefficients[ai] * b.coefficients[bj];
+        }
+    }
 
+    Polynomial result(newDeg, prod);
+    delete[] prod;
+    return result;
 }
 
 ostream & operator<<(ostream &out, const Polynomial &what) {
-    for (int i = what.degree(); i >= 0; --i) {
-        out << what[i] << "x^" << i << " + ";
+    bool first = true;
+
+    for (int i = what.capacity - 1; i >= 0; --i) {
+        double c = what.coefficients[i];
     }
     return out;
 }
-
-
