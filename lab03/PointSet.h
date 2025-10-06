@@ -25,8 +25,6 @@ class PointSet {
         void sortPointsY();
         void sortDistances();
         int numDistinctDistances();
-
-
 };
 
 
