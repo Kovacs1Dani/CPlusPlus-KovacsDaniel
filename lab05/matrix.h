@@ -28,6 +28,8 @@ class Matrix {
         int getRows() const {return mRows;}
         int getCols() const {return mCols;}
 
+        friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
+
         friend Matrix operator+(const Matrix& x, const Matrix& y);
         friend Matrix operator*(const Matrix& x, const Matrix& y);
 
