@@ -2,6 +2,8 @@
 // Created by Kovacs Dani on 20.10.2025.
 //
 #include "Quiz.h"
+
+#include <fstream>
 using namespace std;
 #include <iostream>
 
@@ -36,5 +38,62 @@ const vector<QuizItem> & Quiz::getItems() const {
 }
 
 bool Quiz::loadFromFile(const string &filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cerr << "❌ Nem sikerült megnyitni a fájlt: " << filename << endl;
+        return false;
+    }
 
+    string line;
+    int idCounter = 1;
+
+    while (getline(file, line)) {
+        if (line.empty()) continue;
+
+        if (line[0] == 'Q') {
+            vector<string> questionLines;
+            questionLines.push_back(line.substr(2));
+
+            string answersCombined;
+            string correctStr;
+
+            // több A sor kezelése
+            while (getline(file, line)) {
+                if (line.empty()) continue;
+
+                if (line[0] == 'A') {
+                    if (!answersCombined.empty()) answersCombined += "\n";
+                    answersCombined += line.substr(2);
+                } else if (isdigit(line[0])) {
+                    // ez lesz a helyes válasz sorszáma
+                    correctStr = line;
+                    break;
+                } else if (line[0] == 'Q') {
+                    // ha valamiért új kérdés kezdődik szám nélkül
+                    cerr << "⚠️ Hiányzik helyes válasz a kérdés #" << idCounter << " után!\n";
+                    // visszalépünk egy sort, hogy a következő Q feldolgozható legyen
+                    file.seekg(-static_cast<int>(line.size()) - 1, ios::cur);
+                    break;
+                }
+            }
+
+            int correctIndex = 0;
+            if (!correctStr.empty()) {
+                try {
+                    correctIndex = stoi(correctStr);
+                } catch (...) {
+                    cerr << "⚠️ Hibás helyes válasz formátum (#" << idCounter << "): '" << correctStr << "'\n";
+                    correctIndex = 0;
+                }
+            } else {
+                cerr << "⚠️ Hiányzik helyes válasz szám (#" << idCounter << ")\n";
+                continue;
+            }
+
+            addItem(QuizItem(idCounter++, questionLines, answersCombined, correctIndex));
+        }
+    }
+
+    finalize();
+    return true;
 }
