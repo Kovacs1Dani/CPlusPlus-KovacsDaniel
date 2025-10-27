@@ -40,7 +40,7 @@ const vector<QuizItem> & Quiz::getItems() const {
 bool Quiz::loadFromFile(const string &filename) {
     ifstream file(filename);
     if (!file.is_open()) {
-        cerr << "❌ Nem sikerült megnyitni a fájlt: " << filename << endl;
+        cerr << "Cannot open file: " << filename << endl;
         return false;
     }
 
@@ -57,7 +57,6 @@ bool Quiz::loadFromFile(const string &filename) {
             string answersCombined;
             string correctStr;
 
-            // több A sor kezelése
             while (getline(file, line)) {
                 if (line.empty()) continue;
 
@@ -65,13 +64,10 @@ bool Quiz::loadFromFile(const string &filename) {
                     if (!answersCombined.empty()) answersCombined += "\n";
                     answersCombined += line.substr(2);
                 } else if (isdigit(line[0])) {
-                    // ez lesz a helyes válasz sorszáma
                     correctStr = line;
                     break;
                 } else if (line[0] == 'Q') {
-                    // ha valamiért új kérdés kezdődik szám nélkül
-                    cerr << "⚠️ Hiányzik helyes válasz a kérdés #" << idCounter << " után!\n";
-                    // visszalépünk egy sort, hogy a következő Q feldolgozható legyen
+                    cerr << "Hianyzik helyes valasz a kardas #" << idCounter << " utan!\n";
                     file.seekg(-static_cast<int>(line.size()) - 1, ios::cur);
                     break;
                 }
@@ -82,11 +78,11 @@ bool Quiz::loadFromFile(const string &filename) {
                 try {
                     correctIndex = stoi(correctStr);
                 } catch (...) {
-                    cerr << "⚠️ Hibás helyes válasz formátum (#" << idCounter << "): '" << correctStr << "'\n";
+                    cerr << " Hibas helyes valasz formatum (#" << idCounter << "): '" << correctStr << "'\n";
                     correctIndex = 0;
                 }
             } else {
-                cerr << "⚠️ Hiányzik helyes válasz szám (#" << idCounter << ")\n";
+                cerr << "Hianyzik helyes valasz szam (#" << idCounter << ")\n";
                 continue;
             }
 
