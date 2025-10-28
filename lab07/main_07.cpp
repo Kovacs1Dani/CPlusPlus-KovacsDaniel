@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <random>
 using namespace std;
 
 int main() {
@@ -88,6 +89,42 @@ int main() {
     sort(monthsTemp.begin(), monthsTemp.end(), [](const pair<string, double>& a, const pair<string, double>& b ) {return a.second < b.second;});
     for (const auto& p : monthsTemp) {
         cout << p.first << " - " << p.second << " °C\n";
+    }
+
+    //Hetedik feladat
+    vector<double> RealNumbers {3.14, 5.66, 4.32, 5.56, 7.54, 9.99, 4.41, 3.21};
+    sort(RealNumbers.begin(), RealNumbers.end(), [](double a, double b){return abs(a) < abs(b);});
+
+    for (double n : RealNumbers) {
+        cout << abs(n) << " ";
+    }
+    cout << endl;
+    //Nyolcadik feladat
+
+    auto smallCapitals = for_each(months.begin(), months.end(), []( string &month) {
+        for (char &c : month) {
+            c = tolower(static_cast<unsigned char>(c));
+        }
+    });
+    cout << "Months with small capitals:\n";
+    for (const auto& m : months) {
+        cout << m << " ";
+    }
+    cout << endl;
+    //Kilencedik feladat
+    vector<string> abc {"a","b","c","d","f","g","h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+
+    random_device rd;
+    mt19937 s(rd());
+
+    shuffle(abc.begin(), abc.end(), s);
+    for (auto a : abc) {
+        cout << a << " ";
+    }
+    cout << endl;
+    shuffle(months.begin(), months.end(), s);
+    for (const auto& m : months) {
+        cout << m << " ";
     }
     return 0;
 }
