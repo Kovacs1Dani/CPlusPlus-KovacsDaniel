@@ -67,7 +67,7 @@ bool Quiz::loadFromFile(const string &filename) {
                     correctStr = line;
                     break;
                 } else if (line[0] == 'Q') {
-                    cerr << "Hianyzik helyes valasz a kardas #" << idCounter << " utan!\n";
+                    cerr << "Hianyzik helyes valasz a kerdes #" << idCounter << " utan!\n";
                     file.seekg(-static_cast<int>(line.size()) - 1, ios::cur);
                     break;
                 }
